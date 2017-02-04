@@ -1,5 +1,7 @@
 package com.hrenic.popularmovies.model;
 
+import com.hrenic.popularmovies.util.Config;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,18 +10,6 @@ import org.json.JSONObject;
  */
 
 public class Movie {
-
-    /*
-        Used for building poster URLs
-     */
-
-    private static final String MOVIE_DB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String DEFAULT_IMAGE_SIZE = "w185";
-
-    /*
-        Base URL for API
-     */
-    public static final String MOVIE_DB_API_BASE_URL ="https://api.themoviedb.org/3/movie/";
 
     /*
         JSON keys
@@ -50,7 +40,7 @@ public class Movie {
     }
 
     public String getFullPosterURL() {
-        return MOVIE_DB_POSTER_BASE_URL + DEFAULT_IMAGE_SIZE + posterURL;
+        return Config.MOVIE_DB_POSTER_BASE_URL + Config.DEFAULT_IMAGE_SIZE + posterURL;
     }
 
     public String getOriginalTitle() {
