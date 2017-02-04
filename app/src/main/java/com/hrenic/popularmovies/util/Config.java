@@ -3,6 +3,8 @@ package com.hrenic.popularmovies.util;
 import android.net.Uri;
 import android.util.Log;
 
+import com.hrenic.popularmovies.BuildConfig;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -29,7 +31,7 @@ public class Config {
     private static final String SORT_ORDER_POPULAR = "popular";
     private static final String SORT_ORDER_TOP_RATED = "top_rated";
 
-    private static final String API_KEY = "PUT-MOVIE-DB-API-KEY-HERE";
+    private static final String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     private static final String LANGUAGE = "en-US";
     private static final String PAGE = "1";
 
