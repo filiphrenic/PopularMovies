@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.hrenic.popularmovies.BuildConfig;
+import com.hrenic.popularmovies.model.SortCriteria;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,9 +29,6 @@ public class Config {
      */
     private static final String MOVIE_DB_API_BASE_URL = "https://api.themoviedb.org/3/movie/";
 
-    private static final String SORT_ORDER_POPULAR = "popular";
-    private static final String SORT_ORDER_TOP_RATED = "top_rated";
-
     private static final String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     private static final String LANGUAGE = "en-US";
     private static final String PAGE = "1";
@@ -39,8 +37,8 @@ public class Config {
     private static final String LANGUAGE_PARAM = "language";
     private static final String PAGE_PARAM = "page";
 
-    public static final URL POPULAR_MOVIES = buildAPIurl(SORT_ORDER_POPULAR);
-    public static final URL TOP_RATED_MOVIES = buildAPIurl(SORT_ORDER_TOP_RATED);
+    public static final URL POPULAR_MOVIES = buildAPIurl(SortCriteria.MOST_POPULAR.toString());
+    public static final URL TOP_RATED_MOVIES = buildAPIurl(SortCriteria.TOP_RATED.toString());
 
     /**
      * Create API url for given sort order
