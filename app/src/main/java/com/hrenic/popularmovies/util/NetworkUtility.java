@@ -5,9 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -36,14 +33,16 @@ public class NetworkUtility {
     }
 
     /**
-     * This method returns a JSON object retrieved from the HTTP request.
+     * This method returns a contents retrieved from the HTTP request.
      *
      * @param url The URL to fetch the HTTP response from.
      *
      * @return The contents of the HTTP response.
      * @throws IOException Related to network and stream reading
      */
-    public static JSONObject getJSONFromURL(URL url) throws IOException {
+    public static String getContentFromURL(URL url) throws IOException {
+
+        String result = null;
 
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -53,21 +52,16 @@ public class NetworkUtility {
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
 
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                String result = scanner.next();
-                try {
-                    return new JSONObject(result);
-                } catch (JSONException ex) {
-                    Log.e(TAG, "JSON failed", ex);
-                }
+            if (scanner.hasNext()) {
+                result = scanner.next();
             }
 
-            return null;
-
+        } catch (IOException ex) {
+            Log.v(TAG, "Error while getting contents from " + url, ex);
         } finally {
             urlConnection.disconnect();
         }
 
+        return result;
     }
 }
