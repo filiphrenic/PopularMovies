@@ -1,5 +1,6 @@
 package com.hrenic.popularmovies.activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -96,8 +97,9 @@ public class HomeActivity extends AppCompatActivity implements MovieOnClickHandl
 
     @Override
     public void onClick(Movie movie) {
-        // TODO start movie activity
-        Toast.makeText(this, movie.getOriginalTitle(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, MovieActivity.class);
+        intent.putExtra(MovieActivity.MOVIE_KEY, movie);
+        startActivity(intent);
     }
 
     /**
