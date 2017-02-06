@@ -3,15 +3,20 @@ package com.hrenic.popularmovies.activities;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hrenic.popularmovies.R;
+import com.hrenic.popularmovies.adapters.MovieAdapter;
 import com.hrenic.popularmovies.model.Movie;
 import com.hrenic.popularmovies.model.SortCriteria;
 import com.hrenic.popularmovies.util.Config;
@@ -22,7 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -30,20 +35,47 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
 
     private SortCriteria currentCriteria;
-    private List<Movie> movies;
+
+    private MovieAdapter mAdapter;
+
+    private RecyclerView mMoviewRecyclerView;
+    private TextView mErrorTextView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        currentCriteria = SortCriteria.MOST_POPULAR;
-        movies = new LinkedList<>(); // XXX
+
+
+        mMoviewRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
+        mErrorTextView = (TextView) findViewById(R.id.tv_error_message);
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+
+        RecyclerView.LayoutManager manager = new GridLayoutManager(this, 2);
+        mAdapter = new MovieAdapter(this);
+
+        mMoviewRecyclerView.setLayoutManager(manager);
+        mMoviewRecyclerView.setAdapter(mAdapter);
+
+//        sortBy(SortCriteria.MOST_POPULAR);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_menu, menu);
         return true;
+    }
+
+    private void showMovieData() {
+        mErrorTextView.setVisibility(View.INVISIBLE);
+        mMoviewRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorMessage(String msg) {
+        mErrorTextView.setVisibility(View.VISIBLE);
+        mErrorTextView.setText(msg);
+        mMoviewRecyclerView.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -110,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // TODO enable spinner
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -139,7 +171,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
             super.onPostExecute(jsonArray);
-            movies.clear();
+            List<Movie> movies = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     Movie movie = new Movie(jsonArray.getJSONObject(i));
@@ -148,8 +180,8 @@ public class HomeActivity extends AppCompatActivity {
                     Log.v(TAG, "Error while extracting movie", ex);
                 }
             }
-            // TODO disable spinner
-            // TODO populate grid list
+            mProgressBar.setVisibility(View.INVISIBLE);
+            mAdapter.setMovies(movies);
         }
     }
 
