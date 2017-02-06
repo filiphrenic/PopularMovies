@@ -9,24 +9,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hrenic.popularmovies.R;
+import com.hrenic.popularmovies.handlers.MovieOnClickHandler;
 import com.hrenic.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Movie adapter
+ * Movie adapter for home grid list
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private Context context;
+    private MovieOnClickHandler clickHandler;
     private List<Movie> movies;
 
-    public MovieAdapter(Context context) {
+    public MovieAdapter(Context context, MovieOnClickHandler clickHandler) {
         this.context = context;
-        movies = new ArrayList<>();
+        this.clickHandler = clickHandler;
     }
 
     public void setMovies(List<Movie> movies) {
@@ -51,10 +52,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        return movies == null ? 0 : movies.size();
     }
 
-    class MovieViewHolder extends RecyclerView.ViewHolder {
+    private void clickedOnPosition(int position) {
+        clickHandler.onClick(movies.get(position));
+    }
+
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mMovieTitleTextView;
         private ImageView mMoviePosterImageView;
@@ -63,11 +68,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             super(itemView);
             mMovieTitleTextView = (TextView) itemView.findViewById(R.id.tv_movie_title);
             mMoviePosterImageView = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
+            itemView.setOnClickListener(this);
         }
 
         void setMovie(Movie movie) {
             mMovieTitleTextView.setText(movie.getOriginalTitle());
             Picasso.with(context).load(movie.getFullPosterURL()).into(mMoviePosterImageView);
+        }
+
+        @Override
+        public void onClick(View v) {
+            clickedOnPosition(getAdapterPosition());
         }
     }
 }

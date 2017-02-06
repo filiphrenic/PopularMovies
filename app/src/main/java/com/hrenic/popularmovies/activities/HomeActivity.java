@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.hrenic.popularmovies.R;
 import com.hrenic.popularmovies.adapters.MovieAdapter;
+import com.hrenic.popularmovies.handlers.MovieOnClickHandler;
 import com.hrenic.popularmovies.model.Movie;
 import com.hrenic.popularmovies.model.SortCriteria;
 import com.hrenic.popularmovies.util.Config;
@@ -30,12 +31,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements MovieOnClickHandler {
 
     private static final String TAG = "HomeActivity";
 
     private SortCriteria currentCriteria;
-
     private MovieAdapter mAdapter;
 
     private RecyclerView mMoviewRecyclerView;
@@ -47,18 +47,17 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
         mMoviewRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mErrorTextView = (TextView) findViewById(R.id.tv_error_message);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         RecyclerView.LayoutManager manager = new GridLayoutManager(this, 2);
-        mAdapter = new MovieAdapter(this);
+        mAdapter = new MovieAdapter(this, this);
 
         mMoviewRecyclerView.setLayoutManager(manager);
         mMoviewRecyclerView.setAdapter(mAdapter);
 
-//        sortBy(SortCriteria.MOST_POPULAR);
+        sortBy(SortCriteria.MOST_POPULAR);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         if (!NetworkUtility.isOnline(this)) {
-            showNoNetworkConnection();
+            showErrorMessage("No internet connection");
             return;
         }
 
@@ -95,8 +94,10 @@ public class HomeActivity extends AppCompatActivity {
         new FetchMoviesTask().execute(criteria);
     }
 
-    private void showNoNetworkConnection() {
-        Toast.makeText(this, "No network", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onClick(Movie movie) {
+        // TODO start movie activity
+        Toast.makeText(this, movie.getOriginalTitle(), Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -171,6 +172,14 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
             super.onPostExecute(jsonArray);
+
+            if (jsonArray == null) {
+                showErrorMessage("Error while loading movie data");
+                return;
+            }
+
+            showMovieData();
+
             List<Movie> movies = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
@@ -180,6 +189,7 @@ public class HomeActivity extends AppCompatActivity {
                     Log.v(TAG, "Error while extracting movie", ex);
                 }
             }
+
             mProgressBar.setVisibility(View.INVISIBLE);
             mAdapter.setMovies(movies);
         }

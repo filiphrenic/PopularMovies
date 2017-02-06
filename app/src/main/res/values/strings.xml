@@ -3,4 +3,5 @@
     <string name="sort_by">Sort by</string>
     <string name="most_popular">Most popular</string>
     <string name="top_rated">Top rated</string>
+    <string name="error_string">Error</string>
 </resources>
