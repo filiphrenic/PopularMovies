@@ -1,14 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_movie"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hrenic.popularmovies.activities.MovieActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</RelativeLayout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_movie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:weightSum="1"
+        tools:context="com.hrenic.popularmovies.activities.MovieActivity">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            >
+
+            <ImageView
+                android:id="@+id/iv_movie_poster_detail"
+                android:layout_width="113dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="fitStart"
+                android:src="@mipmap/ic_launcher"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="77dp"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tv_movie_release_date_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Release date"
+                    android:textSize="22sp"
+                    android:textStyle="normal|bold|italic"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_movie_rating_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rating"
+                        android:textSize="22sp"
+                        android:textStyle="normal|bold|italic"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@android:drawable/btn_star"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_movie_synopsis_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Some text..."
+            android:textSize="24sp"
+            android:textStyle="normal|italic"/>
+
+
+    </LinearLayout>
+</ScrollView>

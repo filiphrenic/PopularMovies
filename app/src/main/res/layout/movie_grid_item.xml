@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatImageView
+        <ImageView
             android:id="@+id/iv_movie_poster"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:background="#55000000"
             android:padding="8dp">
 
-            <android.support.v7.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
