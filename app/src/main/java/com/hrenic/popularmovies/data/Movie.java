@@ -46,7 +46,10 @@ public class Movie implements Parcelable {
     @Column
     private String releaseDate;
 
-    public Movie(){
+    @Column(defaultValue = "0")
+    private boolean favorite;
+
+    public Movie() {
         // for DB
     }
 
@@ -58,6 +61,7 @@ public class Movie implements Parcelable {
             plotSynopsis = json.getString(PLOT_SYNOPSIS_KEY);
             userRating = json.getDouble(USER_RATING_KEY);
             releaseDate = json.getString(RELEASE_DATE_KEY);
+            favorite = false;
         } catch (JSONException ex) {
             throw new IllegalArgumentException(ex);
         }
@@ -70,6 +74,7 @@ public class Movie implements Parcelable {
         plotSynopsis = source.readString();
         userRating = source.readDouble();
         releaseDate = source.readString();
+        favorite = source.readByte() != 0;
     }
 
     // PARCELABLE
@@ -87,6 +92,7 @@ public class Movie implements Parcelable {
         dest.writeString(plotSynopsis);
         dest.writeDouble(userRating);
         dest.writeString(releaseDate);
+        dest.writeByte(favorite ? (byte) 1 : 0);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -153,5 +159,13 @@ public class Movie implements Parcelable {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }
