@@ -1,8 +1,11 @@
 package com.hrenic.popularmovies.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -14,14 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hrenic.popularmovies.R;
 import com.hrenic.popularmovies.adapters.MovieAdapter;
-import com.hrenic.popularmovies.handlers.MovieOnClickHandler;
-import com.hrenic.popularmovies.model.Movie;
+import com.hrenic.popularmovies.data.Movie;
 import com.hrenic.popularmovies.model.SortCriteria;
 import com.hrenic.popularmovies.util.Config;
+import com.hrenic.popularmovies.util.Initializer;
 import com.hrenic.popularmovies.util.NetworkUtility;
 
 import org.json.JSONArray;
@@ -32,7 +34,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity implements MovieOnClickHandler {
+public class HomeActivity extends AppCompatActivity
+        implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        MovieAdapter.MovieOnClickHandler {
 
     private static final String TAG = "HomeActivity";
 
@@ -46,6 +51,9 @@ public class HomeActivity extends AppCompatActivity implements MovieOnClickHandl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Initializer.init(this.getApplication());
+
         setContentView(R.layout.activity_home);
 
         mMoviewRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
@@ -140,6 +148,23 @@ public class HomeActivity extends AppCompatActivity implements MovieOnClickHandl
         });
     }
 
+    // LOADER
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
     private class FetchMoviesTask extends AsyncTask<SortCriteria, Void, JSONArray> {
 
         @Override
@@ -196,6 +221,5 @@ public class HomeActivity extends AppCompatActivity implements MovieOnClickHandl
             mAdapter.setMovies(movies);
         }
     }
-
 
 }

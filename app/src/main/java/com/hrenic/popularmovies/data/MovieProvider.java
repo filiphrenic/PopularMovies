@@ -16,7 +16,7 @@ import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 )
 public class MovieProvider {
 
-    static final String AUTHORITY = "com.hrenic.popularmovies.data";
+    static final String AUTHORITY = "com.hrenic.popularmovies";
 
     static final String BASE_CONTENT_URI = "content://";
 

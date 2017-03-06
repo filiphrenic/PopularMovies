@@ -24,9 +24,9 @@
         </activity>
 
         <provider
-            android:authorities="com.hrenic.popularmovies.data"
+            android:authorities="com.hrenic.popularmovies"
             android:exported="false"
-            android:name=".MovieProvider"/>
+            android:name=".data.MovieProvider_Provider"/>
 
     </application>
 

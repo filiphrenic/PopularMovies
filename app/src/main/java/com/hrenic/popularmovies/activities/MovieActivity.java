@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hrenic.popularmovies.R;
-import com.hrenic.popularmovies.model.Movie;
+import com.hrenic.popularmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
