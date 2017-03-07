@@ -17,14 +17,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hrenic.popularmovies.R;
 import com.hrenic.popularmovies.adapters.MovieAdapter;
 import com.hrenic.popularmovies.data.Movie;
 import com.hrenic.popularmovies.model.SortCriteria;
+import com.hrenic.popularmovies.network.TheMovieDBAPI;
+import com.hrenic.popularmovies.network.TheMovieDBController;
 import com.hrenic.popularmovies.util.Config;
 import com.hrenic.popularmovies.util.Initializer;
-import com.hrenic.popularmovies.util.NetworkUtility;
+import com.hrenic.popularmovies.network.NetworkUtility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +69,15 @@ public class HomeActivity extends AppCompatActivity
         mMoviewRecyclerView.setLayoutManager(manager);
         mMoviewRecyclerView.setAdapter(mAdapter);
 
-        sortBy(SortCriteria.MOST_POPULAR);
+        TheMovieDBController controller = new TheMovieDBController(
+                TheMovieDBAPI::getMostPopular,
+                movies -> mAdapter.setMovies(movies),
+                t -> Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show()
+        );
+
+        controller.getMovies();
+
+//        sortBy(SortCriteria.MOST_POPULAR);
     }
 
     @Override

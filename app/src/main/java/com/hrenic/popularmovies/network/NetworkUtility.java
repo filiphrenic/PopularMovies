@@ -1,4 +1,4 @@
-package com.hrenic.popularmovies.util;
+package com.hrenic.popularmovies.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

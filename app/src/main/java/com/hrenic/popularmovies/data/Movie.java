@@ -3,6 +3,7 @@ package com.hrenic.popularmovies.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
 import com.hrenic.popularmovies.util.Config;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -11,11 +12,20 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * This class represents a movie retrieved from the Movie DB
  */
 @Table(database = MovieDatabase.class)
 public class Movie implements Parcelable {
+
+    public class MovieResults {
+        private static final String RESULTS_KEY = "results";
+
+        @SerializedName(RESULTS_KEY)
+        public List<Movie> results;
+    }
 
     /*
         JSON keys
@@ -29,21 +39,27 @@ public class Movie implements Parcelable {
 
     @PrimaryKey
     @Column
+    @SerializedName(ID_KEY)
     private int id;
 
     @Column
+    @SerializedName(ORIGINAL_TITLE_KEY)
     private String originalTitle;
 
     @Column
+    @SerializedName(POSTER_URL_KEY)
     private String posterURL;
 
     @Column
+    @SerializedName(PLOT_SYNOPSIS_KEY)
     private String plotSynopsis;
 
     @Column
+    @SerializedName(USER_RATING_KEY)
     private double userRating;
 
     @Column
+    @SerializedName(RELEASE_DATE_KEY)
     private String releaseDate;
 
     @Column(defaultValue = "0")

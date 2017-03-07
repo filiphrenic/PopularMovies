@@ -27,7 +27,7 @@ public class Config {
     /*
         Base URL for API
      */
-    private static final String MOVIE_DB_API_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    public static final String MOVIE_DB_API_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final Map<String, String> API_PARAMS;
 
     /*
@@ -68,8 +68,8 @@ public class Config {
      */
     private static URL buildAPIurl(SortCriteria criteria) {
 
-        Uri.Builder builder =Uri.parse(MOVIE_DB_API_BASE_URL + criteria).buildUpon();
-        for (Map.Entry<String, String> entry : API_PARAMS.entrySet()){
+        Uri.Builder builder = Uri.parse(MOVIE_DB_API_BASE_URL + criteria).buildUpon();
+        for (Map.Entry<String, String> entry : API_PARAMS.entrySet()) {
             builder.appendQueryParameter(entry.getKey(), entry.getValue());
         }
 

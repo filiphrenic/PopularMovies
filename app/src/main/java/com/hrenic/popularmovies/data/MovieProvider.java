@@ -37,7 +37,7 @@ public class MovieProvider {
                 path = ENDPOINT,
                 type = ContentUri.ContentType.VND_MULTIPLE
         )
-        public static final Uri CONTENT_URI = buildUri(ENDPOINT);
+        public static final Uri MOVIE_URI = buildUri(ENDPOINT);
 
         @ContentUri(
                 path = ENDPOINT + "/#",
