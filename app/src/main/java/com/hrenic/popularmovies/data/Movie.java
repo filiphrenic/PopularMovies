@@ -12,20 +12,11 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 /**
  * This class represents a movie retrieved from the Movie DB
  */
 @Table(database = MovieDatabase.class)
 public class Movie implements Parcelable {
-
-    public class MovieResults {
-        private static final String RESULTS_KEY = "results";
-
-        @SerializedName(RESULTS_KEY)
-        public List<Movie> results;
-    }
 
     /*
         JSON keys
