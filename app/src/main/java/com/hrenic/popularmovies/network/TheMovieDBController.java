@@ -1,7 +1,9 @@
 package com.hrenic.popularmovies.network;
 
+import android.support.annotation.NonNull;
+
 import com.hrenic.popularmovies.BuildConfig;
-import com.hrenic.popularmovies.data.Movie;
+import com.hrenic.popularmovies.data.Results;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -19,32 +21,52 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Abstract controller for getting movies from endpoint
  */
-public class TheMovieDBController implements Callback<Movie.MovieResults> {
+public class TheMovieDBController<R> implements Callback<Results<R>> {
 
     private static final TheMovieDBAPI API = createAPI();
 
-    private Function<TheMovieDBAPI, Call<Movie.MovieResults>> caller;
-    private Consumer<List<Movie>> consumer;
+    private Function<TheMovieDBAPI, Call<Results<R>>> caller;
+    private Consumer<List<R>> consumer;
+
+    private Consumer<Void> onCall;
+    private Consumer<Void> onSuccess;
     private Consumer<Throwable> onError;
 
     public TheMovieDBController(
-            Function<TheMovieDBAPI, Call<Movie.MovieResults>> caller,
-            Consumer<List<Movie>> consumer,
+            @NonNull Function<TheMovieDBAPI, Call<Results<R>>> caller,
+            @NonNull Consumer<List<R>> consumer,
+            Consumer<Void> onCall,
+            Consumer<Void> onSuccess,
             Consumer<Throwable> onError
     ) {
         this.caller = caller;
         this.consumer = consumer;
+        this.onCall = onCall;
+        this.onSuccess = onSuccess;
         this.onError = onError;
     }
 
-    public void getMovies() {
-        Call<Movie.MovieResults> call = caller.apply(API);
+    public TheMovieDBController(
+            Function<TheMovieDBAPI, Call<Results<R>>> caller,
+            Consumer<List<R>> consumer
+    ) {
+        this(caller, consumer, null, null, null);
+    }
+
+    public void getResults() {
+        if (onCall != null) {
+            onCall.accept(null);
+        }
+        Call<Results<R>> call = caller.apply(API);
         call.enqueue(this);
     }
 
     @Override
-    public void onResponse(Call<Movie.MovieResults> call, Response<Movie.MovieResults> response) {
+    public void onResponse(Call<Results<R>> call, Response<Results<R>> response) {
         if (response.isSuccessful()) {
+            if (onSuccess != null) {
+                onSuccess.accept(null);
+            }
             consumer.accept(response.body().results);
         } else {
             onFailure(call, new Exception("Request failed"));
@@ -52,8 +74,10 @@ public class TheMovieDBController implements Callback<Movie.MovieResults> {
     }
 
     @Override
-    public void onFailure(Call<Movie.MovieResults> call, Throwable t) {
-        onError.accept(t);
+    public void onFailure(Call<Results<R>> call, Throwable t) {
+        if (onError != null) {
+            onError.accept(t);
+        }
     }
 
     /**
