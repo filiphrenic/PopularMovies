@@ -2,7 +2,6 @@ package com.hrenic.popularmovies.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -10,42 +9,58 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hrenic.popularmovies.R;
 import com.hrenic.popularmovies.adapters.MovieAdapter;
 import com.hrenic.popularmovies.data.Movie;
+import com.hrenic.popularmovies.data.Results;
 import com.hrenic.popularmovies.model.SortCriteria;
+import com.hrenic.popularmovies.network.NetworkUtility;
 import com.hrenic.popularmovies.network.TheMovieDBAPI;
 import com.hrenic.popularmovies.network.TheMovieDBController;
-import com.hrenic.popularmovies.util.Config;
 import com.hrenic.popularmovies.util.Initializer;
-import com.hrenic.popularmovies.network.NetworkUtility;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
+import retrofit2.Call;
 
 public class HomeActivity extends AppCompatActivity
         implements
         LoaderManager.LoaderCallbacks<Cursor>,
         MovieAdapter.MovieOnClickHandler {
 
-    private static final String TAG = "HomeActivity";
+    private static final String TAG = HomeActivity.class.getSimpleName();
+
 
     private SortCriteria currentCriteria;
     private MovieAdapter mAdapter;
+
+    /*
+        CONTROLLERS
+     */
+
+    private TheMovieDBController<Movie> createController(Function<TheMovieDBAPI, Call<Results<Movie>>> caller) {
+        return new TheMovieDBController<>(
+                caller,
+                this::setMovies,
+                __ -> showLoading(),
+                __ -> showMovieData(),
+                t -> showErrorMessage(t.getMessage())
+        );
+    }
+
+    private TheMovieDBController<Movie> mControllerMostPopular
+            = createController(TheMovieDBAPI::getMostPopular);
+
+    private TheMovieDBController<Movie> mControllerTopRated
+            = createController(TheMovieDBAPI::getTopRated);
 
     private RecyclerView mMoviewRecyclerView;
     private TextView mErrorTextView;
@@ -69,15 +84,11 @@ public class HomeActivity extends AppCompatActivity
         mMoviewRecyclerView.setLayoutManager(manager);
         mMoviewRecyclerView.setAdapter(mAdapter);
 
-        TheMovieDBController controller = new TheMovieDBController(
-                TheMovieDBAPI::getMostPopular,
-                movies -> mAdapter.setMovies(movies),
-                t -> Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_LONG).show()
-        );
+        sortBy(SortCriteria.MOST_POPULAR);
+    }
 
-        controller.getMovies();
-
-//        sortBy(SortCriteria.MOST_POPULAR);
+    private void setMovies(List<Movie> movies) {
+        mAdapter.setMovies(movies);
     }
 
     @Override
@@ -86,12 +97,18 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    private void showLoading() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
     private void showMovieData() {
+        mProgressBar.setVisibility(View.INVISIBLE);
         mErrorTextView.setVisibility(View.INVISIBLE);
         mMoviewRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage(String msg) {
+        mProgressBar.setVisibility(View.INVISIBLE);
         mErrorTextView.setVisibility(View.VISIBLE);
         mErrorTextView.setText(msg);
         mMoviewRecyclerView.setVisibility(View.INVISIBLE);
@@ -111,7 +128,12 @@ public class HomeActivity extends AppCompatActivity
         }
 
         currentCriteria = criteria;
-        new FetchMoviesTask().execute(criteria);
+
+        TheMovieDBController<Movie> controller =
+                criteria == SortCriteria.MOST_POPULAR
+                        ? mControllerMostPopular
+                        : mControllerTopRated;
+        controller.getResults();
     }
 
     @Override
@@ -134,28 +156,23 @@ public class HomeActivity extends AppCompatActivity
         inflater.inflate(R.menu.sort_popup, popup.getMenu());
         popup.show();
 
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        popup.setOnMenuItemClickListener(item1 -> {
 
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+            switch (item1.getItemId()) {
 
-                switch (item.getItemId()) {
+                case R.id.sort_by_most_popular:
+                    HomeActivity.this.sortBy(SortCriteria.MOST_POPULAR);
+                    break;
 
-                    case R.id.sort_by_most_popular:
-                        HomeActivity.this.sortBy(SortCriteria.MOST_POPULAR);
-                        break;
+                case R.id.sort_by_top_rated:
+                    HomeActivity.this.sortBy(SortCriteria.TOP_RATED);
+                    break;
 
-                    case R.id.sort_by_top_rated:
-                        HomeActivity.this.sortBy(SortCriteria.TOP_RATED);
-                        break;
+                default:
+                    return false;
 
-                    default:
-                        return false;
-
-                }
-                return true;
             }
-
+            return true;
         });
     }
 
@@ -174,63 +191,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
-    }
-
-    private class FetchMoviesTask extends AsyncTask<SortCriteria, Void, JSONArray> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected JSONArray doInBackground(SortCriteria... params) {
-
-            if (params == null || params.length < 1) {
-                return null;
-            }
-
-            JSONArray result = null;
-
-            try {
-                String json = NetworkUtility.getContentFromURL(Config.getFor(params[0]));
-                JSONObject jsonObject = new JSONObject(json);
-                if (jsonObject.has("results")) {
-                    result = jsonObject.getJSONArray("results");
-                }
-
-            } catch (IOException | JSONException ex) {
-                Log.v(TAG, "Error while getting movies json", ex);
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(JSONArray jsonArray) {
-            super.onPostExecute(jsonArray);
-
-            if (jsonArray == null) {
-                showErrorMessage("Error while loading movie data");
-                return;
-            }
-
-            showMovieData();
-
-            List<Movie> movies = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
-                try {
-                    Movie movie = new Movie(jsonArray.getJSONObject(i));
-                    movies.add(movie);
-                } catch (JSONException ex) {
-                    Log.v(TAG, "Error while extracting movie", ex);
-                }
-            }
-
-            mProgressBar.setVisibility(View.INVISIBLE);
-            mAdapter.setMovies(movies);
-        }
     }
 
 }
