@@ -86,7 +86,6 @@ public class TheMovieDBController<R> implements Callback<Results<R>> {
      * @return API
      */
     private static TheMovieDBAPI createAPI() {
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(
                         chain -> {

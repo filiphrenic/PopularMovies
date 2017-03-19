@@ -1,13 +1,13 @@
 package com.hrenic.popularmovies.activities;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.hrenic.popularmovies.R;
 import com.hrenic.popularmovies.data.Movie;
+import com.hrenic.popularmovies.databinding.ActivityMovieBinding;
 import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
@@ -19,27 +19,26 @@ public class MovieActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie);
 
         Intent intent = getIntent();
         if (intent == null) {
             return;
         }
 
-        ImageView mPosterImageView = (ImageView) findViewById(R.id.iv_movie_poster_detail);
-        TextView mReleaseDateTextView = (TextView) findViewById(R.id.tv_movie_release_date_detail);
-        TextView mRatingTextView = (TextView) findViewById(R.id.tv_movie_rating_detail);
-        TextView mSynopsisTextView = (TextView) findViewById(R.id.tv_movie_synopsis_detail);
+        ActivityMovieBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_movie);
 
         Movie movie = intent.getParcelableExtra(MOVIE_KEY);
+
+        // TODO load videos and reviews
+
         setTitle(movie.getOriginalTitle());
 
-        Picasso.with(this).load(movie.getFullPosterURL()).into(mPosterImageView);
-        mReleaseDateTextView.setText(movie.getReleaseDate());
-        mRatingTextView.setText(String.format(Locale.getDefault(), "%.1f", movie.getUserRating()));
-        mSynopsisTextView.setText(movie.getPlotSynopsis());
+        Picasso.with(this).load(movie.getFullPosterURL()).into(binding.moviePosterDetail);
+        binding.movieReleaseDateDetail.setText(movie.getReleaseDate());
+        binding.movieRatingDetail.setText(String.format(Locale.getDefault(), "%.1f", movie.getUserRating()));
+        binding.movieSynopsisDetail.setText(movie.getPlotSynopsis());
 
-        mPosterImageView.setMinimumHeight(mPosterImageView.getWidth());
+        binding.moviePosterDetail.setMinimumHeight(binding.moviePosterDetail.getWidth());
 
     }
 }

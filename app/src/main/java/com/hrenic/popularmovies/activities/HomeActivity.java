@@ -2,6 +2,7 @@ package com.hrenic.popularmovies.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -13,13 +14,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.hrenic.popularmovies.R;
 import com.hrenic.popularmovies.adapters.MovieAdapter;
 import com.hrenic.popularmovies.data.Movie;
 import com.hrenic.popularmovies.data.Results;
+import com.hrenic.popularmovies.databinding.ActivityHomeBinding;
 import com.hrenic.popularmovies.model.SortCriteria;
 import com.hrenic.popularmovies.network.NetworkUtility;
 import com.hrenic.popularmovies.network.TheMovieDBAPI;
@@ -37,7 +37,6 @@ public class HomeActivity extends AppCompatActivity
         MovieAdapter.MovieOnClickHandler {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-
 
     private SortCriteria currentCriteria;
     private MovieAdapter mAdapter;
@@ -62,9 +61,7 @@ public class HomeActivity extends AppCompatActivity
     private TheMovieDBController<Movie> mControllerTopRated
             = createController(TheMovieDBAPI::getTopRated);
 
-    private RecyclerView mMoviewRecyclerView;
-    private TextView mErrorTextView;
-    private ProgressBar mProgressBar;
+    private ActivityHomeBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,17 +69,13 @@ public class HomeActivity extends AppCompatActivity
 
         Initializer.init(this.getApplication());
 
-        setContentView(R.layout.activity_home);
-
-        mMoviewRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
-        mErrorTextView = (TextView) findViewById(R.id.tv_error_message);
-        mProgressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_home);
 
         RecyclerView.LayoutManager manager = new GridLayoutManager(this, 2);
         mAdapter = new MovieAdapter(this, this);
 
-        mMoviewRecyclerView.setLayoutManager(manager);
-        mMoviewRecyclerView.setAdapter(mAdapter);
+        mBinding.moviesGrid.setLayoutManager(manager);
+        mBinding.moviesGrid.setAdapter(mAdapter);
 
         sortBy(SortCriteria.MOST_POPULAR);
     }
@@ -98,20 +91,20 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void showLoading() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        mBinding.loadingIndicator.setVisibility(View.VISIBLE);
     }
 
     private void showMovieData() {
-        mProgressBar.setVisibility(View.INVISIBLE);
-        mErrorTextView.setVisibility(View.INVISIBLE);
-        mMoviewRecyclerView.setVisibility(View.VISIBLE);
+        mBinding.loadingIndicator.setVisibility(View.INVISIBLE);
+        mBinding.errorMessage.setVisibility(View.INVISIBLE);
+        mBinding.moviesGrid.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage(String msg) {
-        mProgressBar.setVisibility(View.INVISIBLE);
-        mErrorTextView.setVisibility(View.VISIBLE);
-        mErrorTextView.setText(msg);
-        mMoviewRecyclerView.setVisibility(View.INVISIBLE);
+        mBinding.loadingIndicator.setVisibility(View.INVISIBLE);
+        mBinding.errorMessage.setVisibility(View.VISIBLE);
+        mBinding.errorMessage.setText(msg);
+        mBinding.moviesGrid.setVisibility(View.INVISIBLE);
     }
 
     /**
