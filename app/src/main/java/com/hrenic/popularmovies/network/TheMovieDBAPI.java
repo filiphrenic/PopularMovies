@@ -2,6 +2,7 @@ package com.hrenic.popularmovies.network;
 
 import com.hrenic.popularmovies.data.Movie;
 import com.hrenic.popularmovies.data.Results;
+import com.hrenic.popularmovies.data.Review;
 import com.hrenic.popularmovies.data.Video;
 
 import retrofit2.Call;
@@ -25,6 +26,6 @@ public interface TheMovieDBAPI {
     Call<Results<Video>> getVideos(@Path("id") int movieID);
 
     @GET("{id}/reviews")
-    Call<Results<Video>> getReviews(@Path("id") int movieID);
+    Call<Results<Review>> getReviews(@Path("id") int movieID);
 
 }
