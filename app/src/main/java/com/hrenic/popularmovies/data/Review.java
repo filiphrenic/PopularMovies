@@ -1,8 +1,13 @@
 package com.hrenic.popularmovies.data;
 
+import com.google.gson.annotations.SerializedName;
+
+import org.parceler.Parcel;
+
 /**
  * Review retrieved from TheMovieDB
  */
+@Parcel
 public class Review {
 
     /*
@@ -10,32 +15,20 @@ public class Review {
      */
     private static final String ID_KEY = "id";
     private static final String AUTHOR_KEY = "author";
-    private static final String CONTENT = "content";
+    private static final String CONTENT_KEY = "content";
     private static final String URL_KEY = "url";
 
+    @SerializedName(ID_KEY)
     private String id;
 
+    @SerializedName(AUTHOR_KEY)
     private String author;
 
+    @SerializedName(CONTENT_KEY)
     private String content;
 
+    @SerializedName(URL_KEY)
     private String url;
-
-    public static String getIdKey() {
-        return ID_KEY;
-    }
-
-    public static String getAuthorKey() {
-        return AUTHOR_KEY;
-    }
-
-    public static String getCONTENT() {
-        return CONTENT;
-    }
-
-    public static String getUrlKey() {
-        return URL_KEY;
-    }
 
     public String getId() {
         return id;

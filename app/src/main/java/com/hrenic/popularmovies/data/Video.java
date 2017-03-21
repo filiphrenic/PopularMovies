@@ -2,9 +2,12 @@ package com.hrenic.popularmovies.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
 /**
  * Video retrieved from TheMovieDB
  */
+@Parcel
 public class Video {
 
     /*
@@ -18,7 +21,7 @@ public class Video {
     private static final String TYPE_KEY = "type";
 
     @SerializedName(ID_KEY)
-    private int id;
+    private String id;
 
     @SerializedName(KEY_KEY)
     private String key;
@@ -30,16 +33,16 @@ public class Video {
     private String site;
 
     @SerializedName(SIZE_KEY)
-    private String size;
+    private int size;
 
     @SerializedName(TYPE_KEY)
-    private double type;
+    private String type;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -67,19 +70,19 @@ public class Video {
         this.site = site;
     }
 
-    public String getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
-    public double getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(double type) {
+    public void setType(String type) {
         this.type = type;
     }
 }
