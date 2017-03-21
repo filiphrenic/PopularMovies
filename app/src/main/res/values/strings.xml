@@ -6,4 +6,10 @@
     <string name="error_string">Error</string>
     <string name="poster_description">poster</string>
     <string name="synopsis">Synopsis</string>
+    <string name="movie_poster_image_description">Movie poster</string>
+    <string name="rating">Rating</string>
+    <string name="release_date">Release date</string>
+    <string name="watch_trailer">Watch trailer</string>
+    <string name="reviews_label">Reviews</string>
+    <string name="trailers_label">Trailers</string>
 </resources>
