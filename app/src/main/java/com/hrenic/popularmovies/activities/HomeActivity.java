@@ -26,9 +26,12 @@ import com.hrenic.popularmovies.network.TheMovieDBAPI;
 import com.hrenic.popularmovies.network.TheMovieDBController;
 import com.hrenic.popularmovies.util.Initializer;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 import java.util.function.Function;
 
+import icepick.Icepick;
 import retrofit2.Call;
 
 public class HomeActivity extends AppCompatActivity
@@ -38,8 +41,9 @@ public class HomeActivity extends AppCompatActivity
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
-    private SortCriteria currentCriteria;
+    private ActivityHomeBinding mBinding;
     private MovieAdapter mAdapter;
+    private SortCriteria currentCriteria;
 
     /*
         CONTROLLERS
@@ -61,33 +65,31 @@ public class HomeActivity extends AppCompatActivity
     private TheMovieDBController<Movie> mControllerTopRated
             = createController(TheMovieDBAPI::getTopRated);
 
-    private ActivityHomeBinding mBinding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Initializer.init(this.getApplication());
+        Icepick.restoreInstanceState(this, savedInstanceState);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_home);
 
         RecyclerView.LayoutManager manager = new GridLayoutManager(this, 2);
         mAdapter = new MovieAdapter(this, this);
-
         mBinding.moviesGrid.setLayoutManager(manager);
         mBinding.moviesGrid.setAdapter(mAdapter);
 
         sortBy(SortCriteria.MOST_POPULAR);
     }
 
-    private void setMovies(List<Movie> movies) {
-        mAdapter.setMovies(movies);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home_menu, menu);
-        return true;
+    private void setMovies(List<Movie> movies) {
+        mAdapter.setMovies(movies);
     }
 
     private void showLoading() {
@@ -132,8 +134,36 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onClick(Movie movie) {
         Intent intent = new Intent(this, MovieActivity.class);
-        intent.putExtra(MovieActivity.MOVIE_KEY, movie);
+        intent.putExtra(MovieActivity.MOVIE_KEY, Parcels.wrap(movie));
         startActivity(intent);
+    }
+
+    // LOADER
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    /*
+          MENU
+     */
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return true;
     }
 
     /**
@@ -168,22 +198,4 @@ public class HomeActivity extends AppCompatActivity
             return true;
         });
     }
-
-    // LOADER
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
 }
