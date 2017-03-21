@@ -29,18 +29,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         void onClick(Movie movie);
     }
 
-
-    private Context context;
-    private MovieOnClickHandler clickHandler;
+    private Context mContext;
+    private MovieOnClickHandler mOnClickHandler;
     private Cursor mCursor;
     private List<Movie> movies;
 
-    public MovieAdapter(@NonNull Context context, MovieOnClickHandler clickHandler) {
-        this.context = context;
-        this.clickHandler = clickHandler;
+    public MovieAdapter(@NonNull Context context, MovieOnClickHandler onClickHandler) {
+        this.mContext = context;
+        this.mOnClickHandler = onClickHandler;
     }
 
-    public void setMovies(List<Movie> movies){
+    public void setMovies(List<Movie> movies) {
         this.movies = movies;
         notifyDataSetChanged();
     }
@@ -54,7 +53,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context)
+        View view = LayoutInflater.from(mContext)
                 .inflate(R.layout.movie_grid_item, parent, false);
         return new MovieViewHolder(view);
     }
@@ -67,10 +66,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public int getItemCount() {
         return movies == null ? 0 : movies.size();
-    }
-
-    private void clickedOnPosition(int position) {
-        clickHandler.onClick(movies.get(position));
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -87,12 +82,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         void setMovie(Movie movie) {
             mMovieTitleTextView.setText(movie.getOriginalTitle());
-            Picasso.with(context).load(movie.getFullPosterURL()).into(mMoviePosterImageView);
+            Picasso.with(mContext).load(movie.getFullPosterURL()).into(mMoviePosterImageView);
         }
 
         @Override
         public void onClick(View v) {
-            clickedOnPosition(getAdapterPosition());
+            if (mOnClickHandler != null) {
+                mOnClickHandler.onClick(movies.get(getAdapterPosition()));
+            }
         }
     }
 }
