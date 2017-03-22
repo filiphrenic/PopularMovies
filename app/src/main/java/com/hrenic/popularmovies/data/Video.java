@@ -109,4 +109,8 @@ public class Video extends BaseModel {
     public void setMovie(Movie movie) {
         this.movie = movie;
     }
+
+    public boolean isYoutubeVideo() {
+        return "YouTube".equalsIgnoreCase(site);
+    }
 }

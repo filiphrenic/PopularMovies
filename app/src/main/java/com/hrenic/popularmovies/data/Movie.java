@@ -158,6 +158,7 @@ public class Movie extends BaseModel {
 
     public void setVideos(List<Video> videos) {
         this.videos = videos;
+        videos.forEach(v -> v.setMovie(this));
     }
 
     @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "reviews")
@@ -173,5 +174,6 @@ public class Movie extends BaseModel {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+        reviews.forEach(r -> r.setMovie(this));
     }
 }

@@ -1,11 +1,12 @@
 package com.hrenic.popularmovies.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
 import android.widget.Toast;
 
 import com.hrenic.popularmovies.R;
@@ -30,10 +31,8 @@ public class MovieActivity extends AppCompatActivity
 
     Movie movie;
 
-    List<Video> videos;
     private VideoAdapter mVideoAdapter;
 
-    List<Review> reviews;
     private ReviewAdapter mReviewAdapter;
 
     @Override
@@ -62,20 +61,21 @@ public class MovieActivity extends AppCompatActivity
 
         mVideoAdapter = new VideoAdapter(this, this);
         binding.trailersDetail.setLayoutManager(new LinearLayoutManager(this));
-//        binding.trailersDetail.setHasFixedSize(true);
+        binding.trailersDetail.setHasFixedSize(true);
         binding.trailersDetail.setAdapter(mVideoAdapter);
-        binding.trailersDetail.setVisibility(View.VISIBLE);
+        mVideoAdapter.setVideos(movie.getVideos());
 
         mReviewAdapter = new ReviewAdapter(this);
         binding.reviewsDetail.setLayoutManager(new LinearLayoutManager(this));
         binding.reviewsDetail.setHasFixedSize(true);
         binding.reviewsDetail.setAdapter(mReviewAdapter);
+        mReviewAdapter.setReviews(movie.getReviews());
 
         // load videos and reviews
-        if (videos == null) {
+        if (movie.getVideos() == null || movie.getVideos().size() == 0) {
             new TheMovieDBController<>(api -> api.getVideos(movie.getId()), this::setVideos).getResults();
         }
-        if (reviews == null) {
+        if (movie.getReviews() == null || movie.getReviews().size() == 0) {
             new TheMovieDBController<>(api -> api.getReviews(movie.getId()), this::setReviews).getResults();
         }
 
@@ -85,7 +85,7 @@ public class MovieActivity extends AppCompatActivity
         if (videos == null) {
             return;
         }
-        this.videos = videos;
+        movie.setVideos(videos);
         mVideoAdapter.setVideos(videos);
     }
 
@@ -93,12 +93,24 @@ public class MovieActivity extends AppCompatActivity
         if (reviews == null) {
             return;
         }
-        this.reviews = reviews;
+        movie.setReviews(reviews);
         mReviewAdapter.setReviews(reviews);
     }
 
     @Override
     public void onClick(Video video) {
+        if (video.isYoutubeVideo()) {
+            watchYoutubeVideo(video.getKey());
+        } else {
+            Toast.makeText(this, "Don't know how to open video on site " + video.getSite(), Toast.LENGTH_LONG).show();
+        }
+    }
 
+    private void watchYoutubeVideo(String id) {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id)));
+        } catch (ActivityNotFoundException ex) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + id)));
+        }
     }
 }

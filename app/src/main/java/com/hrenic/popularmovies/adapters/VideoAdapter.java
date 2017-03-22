@@ -49,6 +49,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     }
 
     public void setVideos(List<Video> videos) {
+        if (videos == null) {
+            return;
+        }
         this.videos = videos;
         notifyDataSetChanged();
     }

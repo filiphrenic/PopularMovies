@@ -45,6 +45,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     }
 
     public void setReviews(List<Review> reviews) {
+        if (reviews == null) {
+            return;
+        }
         this.reviews = reviews;
         notifyDataSetChanged();
     }
