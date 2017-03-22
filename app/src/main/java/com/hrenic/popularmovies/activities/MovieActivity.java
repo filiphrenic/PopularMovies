@@ -31,11 +31,9 @@ import java.util.Locale;
 public class MovieActivity extends AppCompatActivity implements VideoAdapter.VideOnClickHandler {
 
     public static final String MOVIE_KEY = "MovieActivity.Movie.key";
-
     Movie movie;
 
     private VideoAdapter mVideoAdapter;
-
     private ReviewAdapter mReviewAdapter;
 
     @Override
@@ -43,13 +41,20 @@ public class MovieActivity extends AppCompatActivity implements VideoAdapter.Vid
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        if (intent != null) {
-            movie = Parcels.unwrap(intent.getParcelableExtra(MOVIE_KEY));
+        try {
+            if (intent != null) {
+                movie = Parcels.unwrap(intent.getParcelableExtra(MOVIE_KEY));
+            } else {
+                movie = Parcels.unwrap(savedInstanceState.getParcelable(MOVIE_KEY));
+            }
+        } catch (Exception ignore) {
         }
         if (movie == null) {
             Toast.makeText(this, "No movie found :(", Toast.LENGTH_LONG).show();
             return;
         }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ActivityMovieBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_movie);
 
@@ -81,15 +86,28 @@ public class MovieActivity extends AppCompatActivity implements VideoAdapter.Vid
         if (movie.getReviews() == null || movie.getReviews().size() == 0) {
             new TheMovieDBController<>(api -> api.getReviews(movie.getId()), this::setReviews).getResults();
         }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (movie != null) {
+            outState.putParcelable(MOVIE_KEY, Parcels.wrap(movie));
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_favorite);
+        if (movie != null) {
+            item.setIcon(getHeart());
+        }
+        return true;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.movie_menu, menu);
-        if (movie != null) {
-            menu.findItem(R.id.action_favorite).setIcon(getHeart());
-        }
         return true;
     }
 

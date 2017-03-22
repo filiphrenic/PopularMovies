@@ -118,6 +118,9 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public void onClick(Movie movie) {
         Intent intent = new Intent(this, MovieActivity.class);
+        if (movie.exists()) {
+            movie.load(); // load is favorite
+        }
         intent.putExtra(MovieActivity.MOVIE_KEY, Parcels.wrap(movie));
         startActivity(intent);
     }

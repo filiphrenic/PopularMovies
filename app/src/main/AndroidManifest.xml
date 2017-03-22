@@ -20,13 +20,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.MovieActivity">
+        <activity
+            android:name=".activities.MovieActivity"
+            android:parentActivityName=".activities.HomeActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HomeActivity"/>
         </activity>
 
         <provider
+            android:name=".data.MovieProvider_Provider"
             android:authorities="com.hrenic.popularmovies"
-            android:exported="false"
-            android:name=".data.MovieProvider_Provider"/>
+            android:exported="false"/>
 
     </application>
 
