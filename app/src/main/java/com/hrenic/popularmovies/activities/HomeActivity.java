@@ -31,7 +31,6 @@ import org.parceler.Parcels;
 import java.util.List;
 import java.util.function.Function;
 
-import icepick.Icepick;
 import retrofit2.Call;
 
 public class HomeActivity extends AppCompatActivity
@@ -70,7 +69,6 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         Initializer.init(this.getApplication());
-        Icepick.restoreInstanceState(this, savedInstanceState);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_home);
 
@@ -80,12 +78,6 @@ public class HomeActivity extends AppCompatActivity
         mBinding.moviesGrid.setAdapter(mAdapter);
 
         sortBy(SortCriteria.MOST_POPULAR);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
     }
 
     private void setMovies(List<Movie> movies) {

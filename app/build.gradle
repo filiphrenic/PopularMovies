@@ -51,14 +51,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 
-    // jobs
-    compile 'com.firebase:firebase-jobdispatcher:0.5.0'
-
-    // instance state
-    compile 'frankiesardo:icepick:3.2.0'
-    provided 'frankiesardo:icepick-processor:3.2.0'
-
-    // content providers
+    // content providers & database
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
