@@ -3,7 +3,6 @@ package com.hrenic.popularmovies.data;
 import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
-import com.hrenic.popularmovies.util.Config;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -24,6 +23,11 @@ import java.util.List;
 @Parcel
 public class Movie extends BaseSyncableProviderModel {
 
+    /*
+        Used for building poster URLs
+     */
+    private static final String MOVIE_DB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String DEFAULT_IMAGE_SIZE = "w185";
 
     /*
         JSON keys
@@ -86,7 +90,7 @@ public class Movie extends BaseSyncableProviderModel {
     }
 
     public String getFullPosterURL() {
-        return Config.MOVIE_DB_POSTER_BASE_URL + Config.DEFAULT_IMAGE_SIZE + posterURL;
+        return MOVIE_DB_POSTER_BASE_URL + DEFAULT_IMAGE_SIZE + posterURL;
     }
 
     // GETTERS AND SETTERS

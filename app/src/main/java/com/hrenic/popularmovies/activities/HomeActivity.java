@@ -18,7 +18,7 @@ import com.hrenic.popularmovies.data.Movie;
 import com.hrenic.popularmovies.data.Movie_Table;
 import com.hrenic.popularmovies.data.Results;
 import com.hrenic.popularmovies.databinding.ActivityHomeBinding;
-import com.hrenic.popularmovies.model.SortCriteria;
+import com.hrenic.popularmovies.util.SortCriteria;
 import com.hrenic.popularmovies.network.NetworkUtility;
 import com.hrenic.popularmovies.network.TheMovieDBAPI;
 import com.hrenic.popularmovies.network.TheMovieDBController;
