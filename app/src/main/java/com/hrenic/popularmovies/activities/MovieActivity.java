@@ -98,19 +98,38 @@ public class MovieActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(Video video) {
-        if (video.isYoutubeVideo()) {
-            watchYoutubeVideo(video.getKey());
+    public void onClick(Video video, boolean share) {
+        String videoID = video.getKey();
+        if (share) {
+            startActivity(createShareIntent(videoID));
         } else {
-            Toast.makeText(this, "Don't know how to open video on site " + video.getSite(), Toast.LENGTH_LONG).show();
+            if (video.isYoutubeVideo()) {
+                watchYoutubeVideo(videoID);
+            } else {
+                Toast.makeText(this, "Don't know how to open video on site " + video.getSite(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 
-    private void watchYoutubeVideo(String id) {
+    private void watchYoutubeVideo(String videoID) {
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id)));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoID)));
         } catch (ActivityNotFoundException ex) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + id)));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeLink(videoID))));
         }
+    }
+
+    private Intent createShareIntent(String videoID) {
+        String content = "Watch " + movie.getOriginalTitle() + " " +
+                youtubeLink(videoID) + " " + getString(R.string.hash_tag);
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, content);
+        return shareIntent;
+    }
+
+    private static String youtubeLink(String videoID) {
+        return "https://youtu.be/" + videoID;
     }
 }

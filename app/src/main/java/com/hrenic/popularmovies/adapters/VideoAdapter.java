@@ -19,7 +19,7 @@ import java.util.List;
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
 
     public interface VideOnClickHandler {
-        void onClick(Video video);
+        void onClick(Video video, boolean share);
     }
 
     private Context context;
@@ -63,6 +63,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         VideoViewHolder(View itemView) {
             super(itemView);
             mVideoNameTextView = (TextView) itemView.findViewById(R.id.video_text);
+            itemView.findViewById(R.id.video_share).setOnClickListener(this);
+            itemView.findViewById(R.id.video_video).setOnClickListener(this);
             itemView.setOnClickListener(this);
         }
 
@@ -73,7 +75,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         @Override
         public void onClick(View v) {
             if (mClickHandler != null) {
-                mClickHandler.onClick(videos.get(getAdapterPosition()));
+                Video video = videos.get(getAdapterPosition());
+                boolean share = v.getId() == R.id.video_share;
+                mClickHandler.onClick(video, share);
             }
         }
     }
