@@ -125,10 +125,13 @@ public class MovieActivity extends AppCompatActivity implements VideoAdapter.Vid
                 movie.setFavorite(!movie.isFavorite());
 
                 // save movie
-                if (movie.exists()) {
-                    movie.update();
-                } else {
-                    movie.save();
+                try {
+                    if (movie.exists()) {
+                        movie.update();
+                    } else {
+                        movie.save();
+                    }
+                } catch (Exception ignore){
                 }
 
                 // update heart icon

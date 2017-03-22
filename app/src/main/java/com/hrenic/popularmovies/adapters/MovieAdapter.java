@@ -2,7 +2,9 @@ package com.hrenic.popularmovies.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,17 +74,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         private TextView mMovieTitleTextView;
         private ImageView mMoviePosterImageView;
+        private ImageView mFavoriteButtonImageView;
 
         MovieViewHolder(View itemView) {
             super(itemView);
             mMovieTitleTextView = (TextView) itemView.findViewById(R.id.tv_movie_title);
             mMoviePosterImageView = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
+            mFavoriteButtonImageView = (ImageView) itemView.findViewById(R.id.iv_fav_button);
             itemView.setOnClickListener(this);
         }
 
         void setMovie(Movie movie) {
             mMovieTitleTextView.setText(movie.getOriginalTitle());
             Picasso.with(mContext).load(movie.getFullPosterURL()).into(mMoviePosterImageView);
+
+            int heartID = movie.isFavorite() ? R.drawable.heart_on : R.drawable.heart_off;
+            Drawable heart = ContextCompat.getDrawable(mContext, heartID);
+            mFavoriteButtonImageView.setImageDrawable(heart);
         }
 
         @Override

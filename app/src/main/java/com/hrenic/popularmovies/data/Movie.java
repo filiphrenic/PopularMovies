@@ -27,7 +27,7 @@ public class Movie extends BaseSyncableProviderModel {
         Used for building poster URLs
      */
     private static final String MOVIE_DB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-    private static final String DEFAULT_IMAGE_SIZE = "w185";
+    private static final String DEFAULT_IMAGE_SIZE = "w500";
 
     /*
         JSON keys
