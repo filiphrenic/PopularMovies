@@ -44,8 +44,8 @@ public class MovieProvider {
                 type = ContentUri.ContentType.VND_SINGLE,
                 segments = {@ContentUri.PathSegment(segment = 1, column = "id")}
         )
-        public static Uri withID(int id) {
-            return buildUri(Integer.toString(id));
+        static Uri withID(int id) {
+            return buildUri(ENDPOINT, Integer.toString(id));
         }
     }
 

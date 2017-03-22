@@ -1,5 +1,7 @@
 package com.hrenic.popularmovies.data;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 import com.hrenic.popularmovies.util.Config;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -7,7 +9,7 @@ import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.provider.BaseSyncableProviderModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +22,8 @@ import java.util.List;
  */
 @Table(database = MovieDatabase.class)
 @Parcel
-public class Movie extends BaseModel {
+public class Movie extends BaseSyncableProviderModel {
+
 
     /*
         JSON keys
@@ -175,5 +178,25 @@ public class Movie extends BaseModel {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
         reviews.forEach(r -> r.setMovie(this));
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return MovieProvider.MovieProviderModel.withID(id);
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return MovieProvider.MovieProviderModel.withID(id);
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return MovieProvider.MovieProviderModel.withID(id);
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return MovieProvider.MovieProviderModel.withID(id);
     }
 }

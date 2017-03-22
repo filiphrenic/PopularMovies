@@ -2,11 +2,17 @@ package com.hrenic.popularmovies.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.hrenic.popularmovies.R;
@@ -24,8 +30,9 @@ import org.parceler.Parcels;
 import java.util.List;
 import java.util.Locale;
 
-public class MovieActivity extends AppCompatActivity
-        implements VideoAdapter.VideOnClickHandler {
+import static com.hrenic.popularmovies.data.Movie_Table.favorite;
+
+public class MovieActivity extends AppCompatActivity implements VideoAdapter.VideOnClickHandler {
 
     public static final String MOVIE_KEY = "MovieActivity.Movie.key";
 
@@ -81,6 +88,41 @@ public class MovieActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.movie_menu, menu);
+        if (movie != null) {
+            menu.findItem(R.id.action_favorite).setIcon(getHeart());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                break;
+            case R.id.action_favorite:
+                movie.setFavorite(!movie.isFavorite());
+
+                // save movie
+                if (movie.exists()) {
+                    movie.update();
+                } else {
+                    movie.save();
+                }
+
+                // update heart icon
+                item.setIcon(getHeart());
+
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
     private void setVideos(List<Video> videos) {
         if (videos == null) {
             return;
@@ -131,5 +173,10 @@ public class MovieActivity extends AppCompatActivity
 
     private static String youtubeLink(String videoID) {
         return "https://youtu.be/" + videoID;
+    }
+
+    private Drawable getHeart() {
+        int heartID = movie.isFavorite() ? R.drawable.heart_on : R.drawable.heart_off;
+        return ContextCompat.getDrawable(this, heartID);
     }
 }

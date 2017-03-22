@@ -1,11 +1,8 @@
 package com.hrenic.popularmovies.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -33,12 +30,7 @@ import java.util.function.Function;
 
 import retrofit2.Call;
 
-public class HomeActivity extends AppCompatActivity
-        implements
-        LoaderManager.LoaderCallbacks<Cursor>,
-        MovieAdapter.MovieOnClickHandler {
-
-    private static final String TAG = HomeActivity.class.getSimpleName();
+public class HomeActivity extends AppCompatActivity implements MovieAdapter.MovieOnClickHandler {
 
     private ActivityHomeBinding mBinding;
     private MovieAdapter mAdapter;
@@ -128,23 +120,6 @@ public class HomeActivity extends AppCompatActivity
         Intent intent = new Intent(this, MovieActivity.class);
         intent.putExtra(MovieActivity.MOVIE_KEY, Parcels.wrap(movie));
         startActivity(intent);
-    }
-
-    // LOADER
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
     /*
