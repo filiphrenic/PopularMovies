@@ -15,6 +15,7 @@ import android.view.View;
 import com.hrenic.popularmovies.R;
 import com.hrenic.popularmovies.adapters.MovieAdapter;
 import com.hrenic.popularmovies.data.Movie;
+import com.hrenic.popularmovies.data.Movie_Table;
 import com.hrenic.popularmovies.data.Results;
 import com.hrenic.popularmovies.databinding.ActivityHomeBinding;
 import com.hrenic.popularmovies.model.SortCriteria;
@@ -22,6 +23,7 @@ import com.hrenic.popularmovies.network.NetworkUtility;
 import com.hrenic.popularmovies.network.TheMovieDBAPI;
 import com.hrenic.popularmovies.network.TheMovieDBController;
 import com.hrenic.popularmovies.util.Initializer;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.parceler.Parcels;
 
@@ -101,6 +103,18 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.Movi
             return;
         }
 
+        if (criteria == SortCriteria.FAVORITES) {
+            currentCriteria = criteria;
+            // from content provider
+            SQLite.select()
+                    .from(Movie.class)
+                    .where(Movie_Table.favorite.is(true))
+                    .async()
+                    .queryListResultCallback((__, movies) -> setMovies(movies))
+                    .execute();
+            return;
+        }
+
         if (!NetworkUtility.isOnline(this)) {
             showErrorMessage("No internet connection");
             return;
@@ -128,7 +142,6 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.Movi
     /*
           MENU
      */
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,5 +180,9 @@ public class HomeActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
             return true;
         });
+    }
+
+    public void showFavorites(MenuItem item) {
+        sortBy(SortCriteria.FAVORITES);
     }
 }

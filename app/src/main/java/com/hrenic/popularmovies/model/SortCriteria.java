@@ -5,7 +5,7 @@ package com.hrenic.popularmovies.model;
  */
 
 public enum SortCriteria {
-    MOST_POPULAR, TOP_RATED;
+    MOST_POPULAR, TOP_RATED, FAVORITES;
 
     /**
      * @return part of url that corresponds to given criteria
