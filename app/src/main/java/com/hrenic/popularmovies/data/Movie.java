@@ -3,19 +3,24 @@ package com.hrenic.popularmovies.data;
 import com.google.gson.annotations.SerializedName;
 import com.hrenic.popularmovies.util.Config;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.OneToMany;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
+
+import java.util.List;
 
 /**
  * This class represents a movie retrieved from the Movie DB
  */
 @Table(database = MovieDatabase.class)
 @Parcel
-public class Movie {
+public class Movie extends BaseModel {
 
     /*
         JSON keys
@@ -54,6 +59,10 @@ public class Movie {
 
     @Column(defaultValue = "0")
     private boolean favorite;
+
+    List<Video> videos;
+
+    List<Review> reviews;
 
     public Movie() {
         // for DB
@@ -133,5 +142,36 @@ public class Movie {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+
+    @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "videos")
+    public List<Video> getVideos() {
+        if (videos == null) {
+            videos = SQLite.select()
+                    .from(Video.class)
+                    .where(Video_Table.movie_id.is(id))
+                    .queryList();
+        }
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
+    }
+
+    @OneToMany(methods = {OneToMany.Method.ALL}, variableName = "reviews")
+    public List<Review> getReviews() {
+        if (reviews == null) {
+            reviews = SQLite.select()
+                    .from(Review.class)
+                    .where(Review_Table.movie_id.is(id))
+                    .queryList();
+        }
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

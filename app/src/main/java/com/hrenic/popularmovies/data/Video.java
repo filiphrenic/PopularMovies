@@ -1,14 +1,20 @@
 package com.hrenic.popularmovies.data;
 
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.parceler.Parcel;
 
 /**
  * Video retrieved from TheMovieDB
  */
+@Table(database = MovieDatabase.class)
 @Parcel
-public class Video {
+public class Video extends BaseModel {
 
     /*
         JSON KEYS
@@ -20,23 +26,33 @@ public class Video {
     private static final String SIZE_KEY = "size";
     private static final String TYPE_KEY = "type";
 
+    @PrimaryKey
+    @Column
     @SerializedName(ID_KEY)
     private String id;
 
+    @Column
     @SerializedName(KEY_KEY)
     private String key;
 
+    @Column
     @SerializedName(NAME_KEY)
     private String name;
 
+    @Column
     @SerializedName(SITE_KEY)
     private String site;
 
+    @Column
     @SerializedName(SIZE_KEY)
     private int size;
 
+    @Column
     @SerializedName(TYPE_KEY)
     private String type;
+
+    @ForeignKey(stubbedRelationship = true)
+    private Movie movie;
 
     public String getId() {
         return id;
@@ -84,5 +100,13 @@ public class Video {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 }
