@@ -2,14 +2,12 @@ package com.hrenic.popularmovies.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +27,6 @@ import org.parceler.Parcels;
 
 import java.util.List;
 import java.util.Locale;
-
-import static com.hrenic.popularmovies.data.Movie_Table.favorite;
 
 public class MovieActivity extends AppCompatActivity implements VideoAdapter.VideOnClickHandler {
 
@@ -101,6 +97,11 @@ public class MovieActivity extends AppCompatActivity implements VideoAdapter.Vid
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share:
+                if (movie.getVideos() == null || movie.getVideos().size() == 0) {
+                    Toast.makeText(this, "No trailers to share", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(createShareIntent(movie.getVideos().get(0).getKey()));
+                }
                 break;
             case R.id.action_favorite:
                 movie.setFavorite(!movie.isFavorite());
